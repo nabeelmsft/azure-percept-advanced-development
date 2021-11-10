@@ -55,4 +55,8 @@ void load_label_file(std::vector<std::string> &class_labels, const std::string &
     }
 }
 
+std::string get_label_info(std::string label) {
+    return "Label info for: " + label;
+}
+
 } // namespace label

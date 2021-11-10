@@ -66,20 +66,22 @@ std::string get_label(int index, const std::vector<std::string> &class_list)
 void put_text(const cv::Mat &rgb, std::string text)
 {
     cv::putText(rgb,
-        text,
+        "Khan",
         cv::Point(300, 20),
         cv::FONT_HERSHEY_SIMPLEX,
-        0.7,
+        1,
         cv::Scalar(0, 0, 0),
         5);
 
     cv::putText(rgb,
-        text,
+        "Khan",
         cv::Point(300, 20),
         cv::FONT_HERSHEY_SIMPLEX,
-        0.7,
+        1,
         cv::Scalar(255, 255, 255),
         2);
+
+        util::log_info("putTextputTextputTextputTextputTextputText... ms.");
 }
 
 void set_logging(bool data)
@@ -278,7 +280,7 @@ bool AdaptiveLogger::adapt()
     if (should_log)
     {
         this->last_timestamp = timestamp;
-        util::log_info("Logging a verbose message. Next time allowed to log will be in " + std::to_string(this->threshold.count()) + " ms.");
+        util::log_info("Logging a verbose message. Next time allowed to log will be in...*** " + std::to_string(this->threshold.count()) + " ms.");
     }
 
     return should_log;

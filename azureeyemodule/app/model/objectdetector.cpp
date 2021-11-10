@@ -249,12 +249,12 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
         // Draw the label. Use the same color. If we can't figure out the label
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
-        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i], 2);
+        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i], 2) + label::get_label_info(util::get_label(labels[i], this->class_labels)) + ".";
         auto origin = boxes[i].tl() + cv::Point(3, 20);
         auto font = cv::FONT_HERSHEY_SIMPLEX;
         auto fontscale = 0.7;
         auto color = cv::Scalar(label::colors().at(color_index));
-        auto thickness = 2;
+        auto thickness = 4;
         cv::putText(rgb, label, origin, font, fontscale, color, thickness);
     }
 }
