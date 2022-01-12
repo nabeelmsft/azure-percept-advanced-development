@@ -5,6 +5,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <curl/curl.h>
 
 // Local includes
 #include "helper.hpp"
@@ -55,8 +57,41 @@ void load_label_file(std::vector<std::string> &class_labels, const std::string &
     }
 }
 
+size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
 std::string get_label_info(std::string label) {
-    return "Label info for: " + label;
+    CURL *curl;
+    CURLcode res;
+    curl = curl_easy_init();    
+    std::string readBuffer;
+    std::string urlquery;
+    urlquery = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&format=json&titles=" + label;
+    if(curl) {
+        curl_easy_setopt(curl, CURLOPT_URL, urlquery.c_str());
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+        /* Perform the request, res will get the return code */ 
+        res = curl_easy_perform(curl);
+        
+        /* Check for errors */ 
+        if(res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n",
+            curl_easy_strerror(res));
+        util::log_debug("Here is the buffer.");
+        util::log_debug(urlquery);
+        util::log_debug(readBuffer);
+        /* always cleanup */ 
+        curl_easy_cleanup(curl);
+        std::size_t pos = readBuffer.find("extract");
+        std::string extract = readBuffer.substr (pos + 10);
+        return "AR: " + extract;
+  }    
+    return "Augmented data for : " + label;
 }
 
 } // namespace label

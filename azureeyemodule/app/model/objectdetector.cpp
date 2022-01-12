@@ -249,14 +249,23 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
         // Draw the label. Use the same color. If we can't figure out the label
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
-        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i], 2) + label::get_label_info(util::get_label(labels[i], this->class_labels)) + ".";
+        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i], 2) + ".";
+        auto arlabel = label::get_label_info(util::get_label(labels[i], this->class_labels)) + ".";
         auto origin = boxes[i].tl() + cv::Point(3, 20);
+        auto arorigin = boxes[i].tl() + cv::Point(3, 40);
         auto font = cv::FONT_HERSHEY_SIMPLEX;
         auto fontscale = 0.7;
         auto color = cv::Scalar(label::colors().at(color_index));
-        auto thickness = 4;
+        auto thickness = 1;
         cv::putText(rgb, label, origin, font, fontscale, color, thickness);
+        cv::putText(rgb, arlabel, arorigin, font, fontscale, color, thickness);
     }
+    int x = 0;
+    int y = 0;
+    int width = 10;
+    int height = 20;
+    cv::Rect rect(x, y, width, height);
+    cv::rectangle(rgb, rect, cv::Scalar(0, 255, 0), 4);
 }
 
 void ObjectDetector::handle_bgr_output(cv::optional<cv::Mat> &out_bgr, const cv::optional<int64_t> &out_bgr_ts, cv::Mat &last_bgr, const std::vector<cv::Rect> &last_boxes,
