@@ -248,7 +248,7 @@ int main(int argc, char** argv)
     util::version();
 
     // Print customization version
-    util::log_info("Custom code version: 1.0.0.2");
+    util::log_info("Custom code version: 1.0.0.3");
 
     // Set up a signal callback for SIGINT so we can gracefully close the application
     signal(SIGINT, interrupt);

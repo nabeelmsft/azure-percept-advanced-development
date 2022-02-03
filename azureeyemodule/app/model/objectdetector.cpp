@@ -239,33 +239,65 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
     // This method is responsible for marking up the raw BGR frames with the inferences from the
     // neural network. Since all of our object detector networks output bounding boxes, labels, and confidences,
     // let's mark up the frames with those items.
+    std::string artext = std::string("");
     for (std::size_t i = 0; i < boxes.size(); i++)
     {
         // Draw a bounding box around the detected object. Use a new color each time
         // up to some point, at which point we wrap around and start reusing colors.
         int color_index = labels[i] % label::colors().size();
-        cv::rectangle(rgb, boxes[i], label::colors().at(color_index), 2);
+        cv::rectangle(rgb, boxes[i], label::colors().at(color_index), 0.5);
 
         // Draw the label. Use the same color. If we can't figure out the label
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
-        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i], 2) + ".";
+        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i]*100, 2) + "%";
         auto arlabel = label::get_label_info(util::get_label(labels[i], this->class_labels)) + ".";
+        artext = arlabel;
         auto origin = boxes[i].tl() + cv::Point(3, 20);
-        auto arorigin = boxes[i].tl() + cv::Point(3, 40);
-        auto font = cv::FONT_HERSHEY_SIMPLEX;
-        auto fontscale = 0.7;
-        auto color = cv::Scalar(label::colors().at(color_index));
+        //auto arorigin = boxes[i].tl() + cv::Point(3, 40);
+        auto font = cv::FONT_HERSHEY_DUPLEX;
+        auto fontscale = 0.5;
+        auto color = cv::Scalar(0, 0, 0); //cv::Scalar(label::colors().at(color_index));
         auto thickness = 1;
-        cv::putText(rgb, label, origin, font, fontscale, color, thickness);
-        cv::putText(rgb, arlabel, arorigin, font, fontscale, color, thickness);
+        auto textline = cv::LINE_AA;
+        cv::putText(rgb, label, origin, font, fontscale, color, thickness, textline);
+        //cv::putText(rgb, arlabel, arorigin, font, fontscale, color, thickness);
+        int width = 400;
+        // int y = 0;
+        auto arcolor = cv::Scalar(0, 0, 0);
+        std::string extract = artext;
+        std::size_t substrlength = 40;
+        if(extract.length() > substrlength) {
+            std::size_t lineNumber = 50;
+            
+            if(extract.length() > 400) {
+                extract = extract.substr(0, 400);
+            }
+            
+            std::string remaining = extract;
+            while (remaining.length() > substrlength)
+            {
+                std::string shortstr = remaining.substr(0,substrlength);
+                remaining = remaining.substr(substrlength-1);
+                cv::putText(rgb, shortstr, boxes[i].tl() + cv::Point(3, lineNumber), font, fontscale, arcolor, thickness, textline);
+                lineNumber = lineNumber + 17;
+            }
+            cv::putText(rgb, remaining, boxes[i].tl() + cv::Point(3, lineNumber), font, fontscale, arcolor, thickness, textline);
+            cv::Mat overlay;
+            rgb.copyTo(overlay);
+            double alpha = 0.4;  // Transparency factor.
+            cv::Rect rect(boxes[i].tl().x, boxes[i].tl().y, width, 225);
+            cv::rectangle(overlay, rect, cv::Scalar(231, 231, 231), -1);
+
+            // blend the overlay with the rgb image
+            cv::addWeighted(overlay, alpha, rgb, 1 - alpha, 0, rgb);
+
+            cv::Rect boundryrect(boxes[i].tl().x, boxes[i].tl().y, width, 225);
+            cv::rectangle(rgb, boundryrect, cv::Scalar(255, 255, 255), 2);
+
+        }
     }
-    int x = 0;
-    int y = 0;
-    int width = 10;
-    int height = 20;
-    cv::Rect rect(x, y, width, height);
-    cv::rectangle(rgb, rect, cv::Scalar(0, 255, 0), 4);
+
 }
 
 void ObjectDetector::handle_bgr_output(cv::optional<cv::Mat> &out_bgr, const cv::optional<int64_t> &out_bgr_ts, cv::Mat &last_bgr, const std::vector<cv::Rect> &last_boxes,

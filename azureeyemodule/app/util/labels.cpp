@@ -88,8 +88,11 @@ std::string get_label_info(std::string label) {
         /* always cleanup */ 
         curl_easy_cleanup(curl);
         std::size_t pos = readBuffer.find("extract");
-        std::string extract = readBuffer.substr (pos + 10);
-        return "AR: " + extract;
+        std::string extract = readBuffer;
+        if(pos > 0) {
+            extract = readBuffer.substr (pos + 10);
+        }
+        return extract;
   }    
     return "Augmented data for : " + label;
 }
