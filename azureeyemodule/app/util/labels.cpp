@@ -63,13 +63,30 @@ size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
     return size * nmemb;
 }
 
-std::string get_label_info(std::string label) {
+std::string get_ar_label(std::string label) {
     CURL *curl;
     CURLcode res;
     curl = curl_easy_init();    
     std::string readBuffer;
     std::string urlquery;
-    urlquery = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&format=json&titles=" + label;
+    std::string normalized_label = label;
+    std::size_t space_position = label.find(" ");
+    std::size_t npos = -1;
+    if(space_position != npos) {
+        util::log_debug("Found space!");
+        normalized_label = label.substr(0, space_position) + "%20" + label.substr(space_position + 1);
+        util::log_debug("label");
+        util::log_debug(label);
+
+        util::log_debug("normalized_label");
+        util::log_debug(normalized_label);
+        space_position = normalized_label.find(" ");
+        while(space_position != npos){
+            normalized_label = normalized_label.substr(0, space_position) + "%20" + normalized_label.substr(space_position + 1);
+            space_position = normalized_label.find(" ");
+        }
+    }
+    urlquery = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&format=json&titles=" + normalized_label;
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, urlquery.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -82,9 +99,7 @@ std::string get_label_info(std::string label) {
         if(res != CURLE_OK)
             fprintf(stderr, "curl_easy_perform() failed: %s\n",
             curl_easy_strerror(res));
-        util::log_debug("Here is the buffer.");
-        util::log_debug(urlquery);
-        util::log_debug(readBuffer);
+        util::log_debug(urlquery);            
         /* always cleanup */ 
         curl_easy_cleanup(curl);
         std::size_t pos = readBuffer.find("extract");

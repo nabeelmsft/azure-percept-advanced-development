@@ -251,19 +251,15 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
         auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i]*100, 2) + "%";
-        auto arlabel = label::get_label_info(util::get_label(labels[i], this->class_labels)) + ".";
-        artext = arlabel;
+        artext = label::get_ar_label(util::get_label(labels[i], this->class_labels)) + ".";
         auto origin = boxes[i].tl() + cv::Point(3, 20);
-        //auto arorigin = boxes[i].tl() + cv::Point(3, 40);
         auto font = cv::FONT_HERSHEY_DUPLEX;
         auto fontscale = 0.5;
         auto color = cv::Scalar(0, 0, 0); //cv::Scalar(label::colors().at(color_index));
         auto thickness = 1;
         auto textline = cv::LINE_AA;
         cv::putText(rgb, label, origin, font, fontscale, color, thickness, textline);
-        //cv::putText(rgb, arlabel, arorigin, font, fontscale, color, thickness);
         int width = 400;
-        // int y = 0;
         auto arcolor = cv::Scalar(0, 0, 0);
         std::string extract = artext;
         std::size_t substrlength = 40;
