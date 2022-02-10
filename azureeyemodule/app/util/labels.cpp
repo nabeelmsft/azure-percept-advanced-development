@@ -70,22 +70,20 @@ std::string get_ar_label(std::string label) {
     std::string readBuffer;
     std::string urlquery;
     std::string normalized_label = label;
+    
+    /**  Code to replace spaces with %20 for http call*/
     std::size_t space_position = label.find(" ");
     std::size_t npos = -1;
     if(space_position != npos) {
-        util::log_debug("Found space!");
         normalized_label = label.substr(0, space_position) + "%20" + label.substr(space_position + 1);
-        util::log_debug("label");
-        util::log_debug(label);
-
-        util::log_debug("normalized_label");
-        util::log_debug(normalized_label);
         space_position = normalized_label.find(" ");
         while(space_position != npos){
             normalized_label = normalized_label.substr(0, space_position) + "%20" + normalized_label.substr(space_position + 1);
             space_position = normalized_label.find(" ");
         }
     }
+
+    /**  Code to retrieve AR data. */    
     urlquery = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&redirects=1&format=json&titles=" + normalized_label;
     if(curl) {
         curl_easy_setopt(curl, CURLOPT_URL, urlquery.c_str());
@@ -99,7 +97,6 @@ std::string get_ar_label(std::string label) {
         if(res != CURLE_OK)
             fprintf(stderr, "curl_easy_perform() failed: %s\n",
             curl_easy_strerror(res));
-        util::log_debug(urlquery);            
         /* always cleanup */ 
         curl_easy_cleanup(curl);
         std::size_t pos = readBuffer.find("extract");
@@ -109,7 +106,7 @@ std::string get_ar_label(std::string label) {
         }
         return extract;
   }    
-    return "Augmented data for : " + label;
+    return "";
 }
 
 } // namespace label
