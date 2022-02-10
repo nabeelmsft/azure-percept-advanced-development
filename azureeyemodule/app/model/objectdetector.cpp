@@ -22,6 +22,7 @@
 #include "../streaming/rtsp.hpp"
 #include "../util/helper.hpp"
 #include "../util/labels.hpp"
+#include "../util/ar.hpp"
 
 namespace model {
 
@@ -292,6 +293,7 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
             cv::rectangle(rgb, boundryrect, cv::Scalar(255, 255, 255), 2);
 
         }
+        auto imagetext = ar::get_ar_image(util::get_label(labels[i], this->class_labels)) + "--image.";
     }
 
 }
