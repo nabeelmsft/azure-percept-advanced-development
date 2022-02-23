@@ -55,5 +55,4 @@ void load_label_file(std::vector<std::string> &class_labels, const std::string &
     }
 }
 
-
 } // namespace label
