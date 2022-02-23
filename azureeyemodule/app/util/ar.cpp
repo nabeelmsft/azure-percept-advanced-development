@@ -24,25 +24,7 @@
 
 namespace ar {
 
-/* Colors to be used for bounding boxes, etc. */
-static const std::vector<cv::Scalar> the_colors = {
-        cv::Scalar(0, 0, 255), cv::Scalar(85, 0, 255), cv::Scalar(170, 0, 255),
-        cv::Scalar(255, 0, 255), cv::Scalar(255, 0, 170), cv::Scalar(255, 0, 85),
-        cv::Scalar(0, 255, 0), cv::Scalar(0, 255, 85), cv::Scalar(0, 255, 170),
-        cv::Scalar(0, 255, 255), cv::Scalar(0, 170, 255), cv::Scalar(0, 85, 255),
-        cv::Scalar(255, 0, 0), cv::Scalar(255, 85, 0), cv::Scalar(255, 170, 0),
-        cv::Scalar(255, 255, 0), cv::Scalar(170, 255, 0), cv::Scalar(85, 255, 0)
-};
-
-const std::vector<cv::Scalar>& colors()
-{
-    return the_colors;
-}
-
-std::string get_ar_image(std::string label) {
-    return "Image for : " + label;
-}
-
+/** Call back for the curl */
 size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
 {
     ((std::string*)userp)->append((char*)contents, size * nmemb);
@@ -95,6 +77,5 @@ std::string get_ar_label(std::string label) {
   }    
     return "";
 }
-
 
 } // namespace ar
