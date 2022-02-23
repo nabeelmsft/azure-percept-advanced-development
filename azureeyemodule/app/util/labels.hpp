@@ -18,6 +18,4 @@ const std::vector<cv::Scalar>& colors();
 /** Load in label file to fill the class_labels. */
 void load_label_file(std::vector<std::string> &class_labels, const std::string &labelfile);
 
-/** Load AR text */
-std::string get_ar_label(std::string label);
 } // namespace label

@@ -22,6 +22,7 @@
 #include "../streaming/rtsp.hpp"
 #include "../util/helper.hpp"
 #include "../util/labels.hpp"
+#include "../util/ar.hpp"
 
 namespace model {
 
@@ -251,7 +252,7 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
         auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i]*100, 2) + "%";
-        artext = label::get_ar_label(util::get_label(labels[i], this->class_labels)) + ".";
+        artext = ar::get_ar_label(util::get_label(labels[i], this->class_labels)) + ".";
         auto origin = boxes[i].tl() + cv::Point(3, 20);
         auto font = cv::FONT_HERSHEY_DUPLEX;
         auto fontscale = 0.5;
