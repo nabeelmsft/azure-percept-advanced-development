@@ -292,7 +292,6 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
             cv::rectangle(rgb, boundryrect, cv::Scalar(255, 255, 255), 2);
         }
     }
-
 }
 
 void ObjectDetector::handle_bgr_output(cv::optional<cv::Mat> &out_bgr, const cv::optional<int64_t> &out_bgr_ts, cv::Mat &last_bgr, const std::vector<cv::Rect> &last_boxes,
