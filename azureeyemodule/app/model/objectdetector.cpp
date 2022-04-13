@@ -251,7 +251,7 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
         // Draw the label. Use the same color. If we can't figure out the label
         // (because the network output something unexpected, or there is no labels file),
         // we just use the class index.
-        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i]*100, 2) + "%";
+        auto label = util::get_label(labels[i], this->class_labels) + ": " + util::to_string_with_precision(confidences[i]*100, 2) + "%***";
         artext = ar::get_ar_label(util::get_label(labels[i], this->class_labels)) + ".";
         auto origin = boxes[i].tl() + cv::Point(3, 20);
         auto font = cv::FONT_HERSHEY_DUPLEX;
@@ -290,6 +290,16 @@ void ObjectDetector::preview(cv::Mat &rgb, const std::vector<cv::Rect> &boxes, c
             cv::addWeighted(overlay, alpha, rgb, 1 - alpha, 0, rgb);
             cv::Rect boundryrect(boxes[i].tl().x, boxes[i].tl().y, width, 225);
             cv::rectangle(rgb, boundryrect, cv::Scalar(255, 255, 255), 2);
+
+            // Add code to get grayscale image
+            cv::Mat gray_image;
+            cv::cvtColor(rgb, gray_image, cv::COLOR_BGR2GRAY);
+            cv::imwrite("Gray_Image.jpg", gray_image);
+            util::log_debug("Added gray_image.jpg.");
+            // if (cv::imwrite("Gray_Image.jpg", gray_image) == null) 
+            // {
+            //     printf( "Writing image is not successfull!");       
+            // }
         }
     }
 }
